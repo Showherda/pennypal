@@ -1,3 +1,8 @@
 # datasets
-*.csv
-*.xlsx
+data/
+
+# env
+.env
+
+# virtual environment
+venv/
