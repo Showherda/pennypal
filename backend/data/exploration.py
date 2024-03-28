@@ -159,3 +159,19 @@ print(ahmad.head())
 #     print(transaction_detail)
 #     transaction_details.insert_transaction_detail(conn, transaction_detail)
 # connection_pool.putconn(conn)
+
+# insert payment methods
+# from pypika import PostgreSQLQuery, Table
+# conn = connection_pool.getconn()
+# cursor = conn.cursor()
+# query = 'SELECT DISTINCT payment_method FROM transactions;'
+# cursor.execute(query)
+# result = cursor.fetchall()
+# cursor.close()
+# for i in result:
+#     payment_method = {
+#         'payment_method': i[0]
+#     }
+#     print(payment_method)
+#     payment_methods.insert_payment_method(conn, payment_method)
+# connection_pool.putconn(conn)
