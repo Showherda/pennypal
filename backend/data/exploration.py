@@ -175,3 +175,8 @@ print(ahmad.head())
 #     print(payment_method)
 #     payment_methods.insert_payment_method(conn, payment_method)
 # connection_pool.putconn(conn)
+
+# insert roles
+# roles.insert_role(connection_pool.getconn(), {'role': 'system'})
+# roles.insert_role(connection_pool.getconn(), {'role': 'user'})
+# roles.insert_role(connection_pool.getconn(), {'role': 'assistant'})
