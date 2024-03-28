@@ -2,7 +2,7 @@ import psycopg2.pool
 from decouple import config
 
 # database imports
-from database import transactions, users, transaction_categories
+from database import transactions, users, transaction_categories, transaction_details
 
 # Load database credentials from .env file
 dbname = config('DB_NAME')
