@@ -7,8 +7,8 @@ def insert_transaction_category(conn, transaction_category):
         query =(
              PostgreSQLQuery
             .into(transaction_categories)
-            .columns('transaction_id', 'transaction_category')
-            .insert(transaction_category['transaction_id'], transaction_category['transaction_category'])
+            .columns('transaction_category')
+            .insert(transaction_category['transaction_category'])
         )
         query = query.get_sql()
         print(query)
@@ -19,7 +19,8 @@ def insert_transaction_category(conn, transaction_category):
     except Exception as e:
         print(e)
         return False
-    
+
+# need to test  
 def get_transaction_categories(conn):
     transaction_categories = Table('transaction_categories')
     try:
@@ -27,7 +28,7 @@ def get_transaction_categories(conn):
         query = (
             PostgreSQLQuery
             .from_(transaction_categories)
-            .select('transaction_category')
+            .select('*')
         )
         query = query.get_sql()
         cursor.execute(query)
