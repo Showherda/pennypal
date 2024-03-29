@@ -14,3 +14,4 @@ Future updates:
 8. finetuning a model
 9. more prompt engineering
 10. gamification: award users with points if they meet budgets
+11. suggest questions to user
