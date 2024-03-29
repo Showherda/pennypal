@@ -36,16 +36,16 @@ danish['date'] = danish['date'].map(lambda x:fix_data(x))
 emily['date'] = emily['date'].map(lambda x:fix_data(x))
 
 # add amount column
-ahmad['withdrawal_amt'] = ahmad['withdrawal_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-ahmad['deposit_amt'] = ahmad['deposit_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-bryan['withdrawal_amt'] = bryan['withdrawal_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-bryan['deposit_amt'] = bryan['deposit_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-charles['withdrawal_amt'] = charles['withdrawal_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-charles['deposit_amt'] = charles['deposit_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-danish['withdrawal_amt'] = danish['withdrawal_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-danish['deposit_amt'] = danish['deposit_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-emily['withdrawal_amt'] = emily['withdrawal_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
-emily['deposit_amt'] = emily['deposit_amt'].astype(str).map(lambda x: x.replace(',', '').replace(' ',''))
+ahmad['withdrawal_amt'] = ahmad['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+ahmad['deposit_amt'] = ahmad['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+bryan['withdrawal_amt'] = bryan['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+bryan['deposit_amt'] = bryan['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+charles['withdrawal_amt'] = charles['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+charles['deposit_amt'] = charles['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+danish['withdrawal_amt'] = danish['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+danish['deposit_amt'] = danish['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+emily['withdrawal_amt'] = emily['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
+emily['deposit_amt'] = emily['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
 
 ahmad['withdrawal_amt'] = ahmad['withdrawal_amt'].astype(float)
 ahmad['deposit_amt'] = ahmad['deposit_amt'].astype(float)
@@ -99,7 +99,7 @@ data.to_csv('combined_data.csv', index=False, sep=';')
 
 print(ahmad.head())
 
-# insert into transactions table
+# # insert into transactions table
 # f=open('data/combined_data.csv','r')
 # for line in f.readlines()[1:]:
 #     line=line.split(';')
@@ -121,14 +121,14 @@ print(ahmad.head())
 #         break
 #     connection_pool.putconn(conn)
 
-# insert users
+# # insert users
 # users.insert_user(connection_pool.getconn(), {'first_name': 'ahmad', 'last_name': '', 'email': 'ahmad@test.com', 'password': 'test'})
 # users.insert_user(connection_pool.getconn(), {'first_name': 'bryan', 'last_name': '', 'email': 'bryan@test.com', 'password': 'test'})
 # users.insert_user(connection_pool.getconn(), {'first_name': 'charles', 'last_name': '', 'email': 'charles@test.com', 'password': 'test'})
 # users.insert_user(connection_pool.getconn(), {'first_name': 'danish', 'last_name': '', 'email': 'danish@test.com', 'password': 'test'})
 # users.insert_user(connection_pool.getconn(), {'first_name': 'emily', 'last_name': '', 'email': 'emily@test.com', 'password': 'test'})
 
-# insert transaction categories
+# # insert transaction categories
 # from pypika import PostgreSQLQuery, Table
 # conn = connection_pool.getconn()
 # cursor = conn.cursor()

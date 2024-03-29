@@ -9,4 +9,8 @@ Future updates:
 3. If we store graphs on the server side, consider storing only file paths in the db
 4. Possible migration: turn transaction_category, transaction_detail, and payment_method columns in transactions table into numerical datatype
 5. Turn role column in conversations table into numerical datatype
-6. Set foreign keys
+6. Set foreign keys in db
+7. put prompts in db
+8. finetuning a model
+9. more prompt engineering
+10. gamification: award users with points if they meet budgets
