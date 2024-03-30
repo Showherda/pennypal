@@ -202,14 +202,14 @@ def generate_graph_code_future(query: str, message: IncomingMessage):
     return response.choices[0].message.content
 
 # incoming message endpoint
-def test():
-    message = IncomingMessage(user_id=1, content="what was my average grocery spending in the past three month?")
-# @app.get("/incoming-message")
-# async def incoming_message(message: IncomingMessage):
-    # # store message in database
-    # conn = connection_pool.getconn()
-    # conversations.insert_conversation(conn, message.model_dump())
-    # connection_pool.putconn(conn)
+# def test():
+#     message = IncomingMessage(user_id=1, content="what was my average grocery spending in the past three month?")
+@app.get("/incoming-message")
+async def incoming_message(message: IncomingMessage):
+    # store message in database
+    conn = connection_pool.getconn()
+    conversations.insert_conversation(conn, message.model_dump())
+    connection_pool.putconn(conn)
 
     # determine whether the question is about the past or the future with OpenAI
     time = check_time(message)
@@ -298,11 +298,11 @@ def test():
         else:
             answer = generate_response_no_query(message)
     print(answer)
-    # answer = MessageResponse(user_id=message.user_id, content=answer)
-    # conn = connection_pool.getconn()
-    # conversations.insert_conversation(conn, answer.model_dump())
-    # connection_pool.putconn(conn)
+    answer = MessageResponse(user_id=message.user_id, content=answer)
+    conn = connection_pool.getconn()
+    conversations.insert_conversation(conn, answer.model_dump())
+    connection_pool.putconn(conn)
 
-if __name__ == '__main__':
-    # uvicorn.run("main:app")
-    test()
+# if __name__ == '__main__':
+#     uvicorn.run("main:app")
+#     # test()
