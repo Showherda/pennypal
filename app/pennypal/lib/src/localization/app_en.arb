@@ -1,0 +1,6 @@
+{
+  "appTitle": "pennypal",
+  "@appTitle": {
+    "description": "The title of the application"
+  }
+}
