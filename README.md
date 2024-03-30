@@ -15,3 +15,4 @@ Future updates:
 9. more prompt engineering
 10. gamification: award users with points if they meet budgets
 11. suggest questions to user
+12. need to update schema
