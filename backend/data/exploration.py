@@ -28,7 +28,7 @@ def fix_data(s):
     d=(2-len(str(s[0])))*'0'+str(s[0])
     return y+'-'+m+'-'+d
 
-# fix date column
+# fix date column with PostgreSQL format
 ahmad['date'] = ahmad['date'].map(lambda x:fix_data(x))
 bryan['date'] = bryan['date'].map(lambda x:fix_data(x))
 charles['date'] = charles['date'].map(lambda x:fix_data(x))
@@ -37,6 +37,7 @@ emily['date'] = emily['date'].map(lambda x:fix_data(x))
 
 # add amount column
 # amount column cancelled
+# fix comma, semicolon. remove whitespaces
 ahmad['withdrawal_amt'] = ahmad['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
 ahmad['deposit_amt'] = ahmad['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
 bryan['withdrawal_amt'] = bryan['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
@@ -48,6 +49,7 @@ danish['deposit_amt'] = danish['deposit_amt'].astype(str).map(lambda x: x.replac
 emily['withdrawal_amt'] = emily['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
 emily['deposit_amt'] = emily['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
 
+# convert to float
 ahmad['withdrawal_amt'] = ahmad['withdrawal_amt'].astype(float)
 ahmad['deposit_amt'] = ahmad['deposit_amt'].astype(float)
 bryan['withdrawal_amt'] = bryan['withdrawal_amt'].astype(float)
@@ -59,6 +61,7 @@ danish['deposit_amt'] = danish['deposit_amt'].astype(float)
 emily['withdrawal_amt'] = emily['withdrawal_amt'].astype(float)
 emily['deposit_amt'] = emily['deposit_amt'].astype(float)
 
+# fill missing values
 ahmad['withdrawal_amt'] = ahmad['withdrawal_amt'].fillna(0)
 ahmad['deposit_amt'] = ahmad['deposit_amt'].fillna(0)
 bryan['withdrawal_amt'] = bryan['withdrawal_amt'].fillna(0)

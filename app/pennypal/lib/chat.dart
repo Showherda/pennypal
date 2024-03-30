@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'dart:ui';
 
 class ChatPage extends StatefulWidget {
@@ -9,6 +10,30 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   int _selectedIndex = 2; // Set index for chat page to be highlighted in bottom navigation bar
+  List<dynamic> chatMessages = []; // List to store chat messages
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch chat messages when the page loads
+    fetchChatMessages().then((messages) {
+      setState(() {
+        chatMessages = messages;
+      });
+    });
+  }
+
+  // Method to fetch chat messages from the API
+  Future<List<String>> fetchChatMessages() async {
+    final response = await http.get(Uri.parse('http://192.168.56.1:8000/incoming-message'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((message) => message['content'].toString()).toList();
+    } else {
+      throw Exception('Failed to fetch chat messages');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

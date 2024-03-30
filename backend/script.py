@@ -1,6 +1,9 @@
 import psycopg2.pool
 from decouple import config
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse, Response
+from PIL import Image
+import io
 from openai import OpenAI
 from pydantic import BaseModel
 import uvicorn
@@ -204,7 +207,7 @@ def generate_graph_code_future(query: str, message: IncomingMessage):
 # incoming message endpoint
 # def test():
 #     message = IncomingMessage(user_id=1, content="what was my average grocery spending in the past three month?")
-@app.get("/incoming-message")
+@app.post("/incoming-message")
 async def incoming_message(message: IncomingMessage):
     # store message in database
     conn = connection_pool.getconn()
@@ -240,7 +243,6 @@ async def incoming_message(message: IncomingMessage):
             cursor.close()
             connection_pool.putconn(conn)
 
-
             # if a graph is needed
             if graph_needed == 1:
                 # generate the graph generation code
@@ -248,7 +250,16 @@ async def incoming_message(message: IncomingMessage):
                 print("graph_code = "+graph_code)
 
                 # execute the graph code
-                graph = exec(graph_code)
+                exec(graph_code)
+                graph = Image.open("data/"+str(message.user_id)+".png")
+
+                # process the graph
+                img_stream = io.BytesIO()
+                graph.save(img_stream, format="PNG")
+                img_stream.seek(0)
+
+                # delete the graph
+                os.remove("data/"+str(message.user_id)+".png")
 
             # create a response
             answer = generate_response_from_query(message, result)
@@ -289,7 +300,16 @@ async def incoming_message(message: IncomingMessage):
                 print("graph_code = "+graph_code)
 
                 # execute the graph code
-                graph = exec(graph_code)
+                exec(graph_code)
+                graph = Image.open("data/"+str(message.user_id)+".png")
+
+                # process the graph
+                img_stream = io.BytesIO()
+                graph.save(img_stream, format="PNG")
+                img_stream.seek(0)
+
+                # delete the graph
+                os.remove("data/"+str(message.user_id)+".png")
 
             # create a response
             answer = generate_response_from_query(message, result)
@@ -298,10 +318,11 @@ async def incoming_message(message: IncomingMessage):
         else:
             answer = generate_response_no_query(message)
     print(answer)
-    answer = MessageResponse(user_id=message.user_id, content=answer)
     conn = connection_pool.getconn()
-    conversations.insert_conversation(conn, answer.model_dump())
+    conversations.insert_conversation(conn, MessageResponse(user_id=message.user_id, content=answer).model_dump())
     connection_pool.putconn(conn)
+
+    return JSONResponse(content={"content": answer})#, Response(img_stream, media_type="image/png")
 
 if __name__ == '__main__':
     uvicorn.run("script:app", host="0.0.0.0", port=8000)
