@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+import os
 
 # database imports
 from database import transactions, conversations, users, transaction_categories, transaction_details, payment_methods, roles
@@ -72,12 +73,33 @@ def check_query_needed(message: IncomingMessage):
     )
     return int(response.choices[0].message.content)
 
-def generate_query(message: IncomingMessage, graph_needed: int):
+def generate_query_past(message: IncomingMessage, graph_needed: int):
     global openai
     # generate the query
     prompt = [
-        {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. generate only a PostgreSQL query string to respond to the following: "+message.content+". if the question asks about a specific product, you must check if the product exists in any of the columns: 'transaction_detail', 'description', 'transaction_category'."},
-        {"role": "user", "content": "user_id="+str(message.user_id)+" and role="+message.role},
+        {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. generate only a PostgreSQL query string to respond to the following: "+message.content},
+        {"role": "user", "content": "if the question asks about a specific product, you must check if the product exists in any of the columns: 'transaction_detail', 'description', 'transaction_category'. dont use equality. you must check if the term exists in any of these columns"},
+        {"role": "user", "content": "the query must be generated for user_id="+str(message.user_id)},
+        {"role": "user", "content": "dont include any imports. dont include any comments, suggestions, or explanations. dont include any formatting symbols"},
+        {"role": "user", "content": "generate only code and nothing else."}
+    ]
+    if graph_needed == 1:
+        prompt.append({"role": "user", "content": "you must generate a query that returns the necessary data for a graph."})
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=prompt,
+        max_tokens=300
+    )
+    return response.choices[0].message.content
+
+def generate_query_future(message: IncomingMessage, graph_needed = 1):
+    global openai
+    # generate the query
+    prompt = [
+        {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. generate only a PostgreSQL query string to respond to the following: "+message.content},
+        {"role": "user", "content": "the database holds data from the past. you must only query past data. do not query for present or future data"},
+        {"role": "user", "content": "if the question asks about a specific product, you must check if the product exists in any of the columns: 'transaction_detail', 'description', 'transaction_category'. dont use equality. you must check if the term exists in any of these columns"},
+        {"role": "user", "content": "the query must be generated for user_id="+str(message.user_id)},
         {"role": "user", "content": "dont include any imports. dont include any comments, suggestions, or explanations. dont include any formatting symbols"},
         {"role": "user", "content": "generate only code and nothing else."}
     ]
@@ -145,8 +167,29 @@ def generate_graph_code_past(query: str, message: IncomingMessage):
         {"role": "user", "content": "generate only a Python matplotlib code snippet to generate a graph to answer the following: "+message.content+" the following PostgreSQL query was generated: "+query},
         {"role": "user", "content": "determine which type of graph is most appropriate."},
         {"role": "user", "content": "you can choose to ignore unnecessary columns from the query string."},
-        # {"role": "user", "content": "the code must return the graph as a bytes object"},
+        {"role": "user", "content": "the code must store the graph at data/"+str(message.user_id)+".png"},
         {"role": "user", "content": "these are the imports already specified in the code: import pandas as pd; import numpy as np; import matplotlib.pyplot as plt"},
+        {"role": "user", "content": "the data is stored as a python list of tuples called result"},
+        {"role": "user", "content": "dont include any imports that are already defined, dont include any comments, suggestions, or explanations. dont include any formatting symbols"},
+        {"role": "user", "content": "generate only code and nothing else."}
+    ]
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=prompt,
+        max_tokens=300
+    )
+    return response.choices[0].message.content
+
+def generate_graph_code_future(query: str, message: IncomingMessage):
+    global openai
+    # generate the graph generation code
+    prompt = [
+        {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'."},
+        {"role": "user", "content": "generate code for a simple linear regression model to predict future values to answer the following: "+message.content+" the following PostgreSQL query was generated: "+query},
+        {"role": "user", "content": "determine which type of graph is most appropriate."},
+        {"role": "user", "content": "you can choose to ignore unnecessary columns from the query string."},
+        {"role": "user", "content": "the code must store the graph at data/"+str(message.user_id)+".png"},
+        {"role": "user", "content": "these are the imports already specified in the code: import pandas as pd; import numpy as np; import matplotlib.pyplot as plt;from sklearn.linear_model import LinearRegression"},
         {"role": "user", "content": "the data is stored as a python list of tuples called result"},
         {"role": "user", "content": "dont include any imports that are already defined, dont include any comments, suggestions, or explanations. dont include any formatting symbols"},
         {"role": "user", "content": "generate only code and nothing else."}
@@ -160,7 +203,7 @@ def generate_graph_code_past(query: str, message: IncomingMessage):
 
 # incoming message endpoint
 def test():
-    message = IncomingMessage(user_id=1, content="what are my spending habits for the past month?")
+    message = IncomingMessage(user_id=1, content="what was my average grocery spending in the past three month?")
 # @app.get("/incoming-message")
 # async def incoming_message(message: IncomingMessage):
     # # store message in database
@@ -185,7 +228,7 @@ def test():
             print("graph_needed = "+str(graph_needed))
             
             # generate the query
-            query = generate_query(message, graph_needed)
+            query = generate_query_past(message, graph_needed)
             print("query = "+query)
             
             # execute the query
@@ -204,14 +247,49 @@ def test():
                 graph_code = generate_graph_code_past(query, message)
                 print("graph_code = "+graph_code)
 
-                # fix the result list
-                for u in result:
-                    for v in u:
-                        if isinstance(v, np.int64) and v<0:
-                            u[u.index(v)] = -v
+                # execute the graph code
+                graph = exec(graph_code)
+
+            # create a response
+            answer = generate_response_from_query(message, result)
+
+        # query isnt needed
+        else:
+            answer = generate_response_no_query(message)
+    
+    # future
+    else:
+        # check if the message requires queries
+        query_needed = check_query_needed(message)
+        print("query_needed = "+str(query_needed))
+
+        # if a query is necessary
+        if query_needed == 1:
+            # determine if a graph is needed to answer the question
+            graph_needed = check_graph_needed(message)
+            print("graph_needed = "+str(graph_needed))
+            
+            # generate the query
+            query = generate_query_future(message, graph_needed)
+            print("query = "+query)
+            
+            # execute the query
+            conn = connection_pool.getconn()
+            cursor = conn.cursor()
+            cursor.execute(query)
+            result = cursor.fetchall()
+            print("result = "+str(result))
+            cursor.close()
+            connection_pool.putconn(conn)
+
+            # if a graph is needed
+            if graph_needed == 1:
+                # generate the graph generation code
+                graph_code = generate_graph_code_future(query, message)
+                print("graph_code = "+graph_code)
 
                 # execute the graph code
-                exec(graph_code)
+                graph = exec(graph_code)
 
             # create a response
             answer = generate_response_from_query(message, result)
