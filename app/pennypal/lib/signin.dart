@@ -10,7 +10,7 @@ class SignInPage extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/background.png'), // Replace with your image path
+              image: AssetImage('assets/images/background.png'), // Replace with image path
               fit: BoxFit.cover,
             ),
           ),
@@ -119,14 +119,14 @@ class SignInPage extends StatelessWidget {
 
                   children: [
                     SignInOption(
-                      imagePath: 'assets/images/fb.png', // Replace with your Facebook logo image path
+                      imagePath: 'assets/images/fb.png', // Replace with Facebook logo image path
                       onTap: () {
                         // Implement Facebook sign-in functionality
                       },
                     ),
                     SizedBox(width: 20),
                     SignInOption(
-                      imagePath: 'assets/images/gmail.png', // Replace with your Google logo image path
+                      imagePath: 'assets/images/gmail.png', // Replace with Google logo image path
                       onTap: () {
                         // Implement Google sign-in functionality
                       },

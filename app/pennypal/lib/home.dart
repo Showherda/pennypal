@@ -283,12 +283,12 @@ class _HomePageState extends State<HomePage> {
           break;
         case 1:
         // Navigate to the monetization page
-        // Add your navigation logic here
+        // Add navigation logic here
           Navigator.pushNamed(context, '/transaction');
           break;
         case 2:
         // Navigate to the chat page
-        // Add your navigation logic here
+        // Add navigation logic here
           Navigator.pushNamed(context, '/chat');
           break;
         case 3:

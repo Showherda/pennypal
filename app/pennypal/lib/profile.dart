@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 radius: 60,
                 backgroundImage: AssetImage('assets/images/pic.png'),
                 backgroundColor: Colors.transparent,
-                // You can replace 'assets/images/profile.png' with the actual path to the user's profile picture
+                // Can replace 'assets/images/profile.png' with the actual path to the user's profile picture
               ),
             ),
             SizedBox(height: 20),
@@ -212,12 +212,12 @@ class _ProfilePageState extends State<ProfilePage> {
           break;
         case 1:
         // Navigate to the monetization page
-        // Add your navigation logic here
+        // Add navigation logic here
           Navigator.pushNamed(context, '/transaction');
           break;
         case 2:
         // Navigate to the chat page
-        // Add your navigation logic here
+        // Add navigation logic here
           Navigator.pushNamed(context, '/chat');
 
           break;

@@ -6,7 +6,7 @@ danish.csv
 emily.csv
 
 # env
-.env
+# .env
 
 # virtual environment
 venv/

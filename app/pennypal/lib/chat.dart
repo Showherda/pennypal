@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:pennypal/api_service.dart'; // Import ApiService
@@ -98,24 +99,34 @@ class _ChatPageState extends State<ChatPage> {
                           profileImage: 'assets/images/profile.png',
                         ),
                       );
+                      Future<Map<String, dynamic>> response = ApiService.sendMessage(user_id, myController.text); // Send message to API
                       setState(() {
                         myController.clear();
                       });
-                      Future<Map<String, dynamic>> response = ApiService.sendMessage(myController.text); // Send message to API
                       response.then((value) {
                         // Add chatbot response to chatMessages list
                         chatMessages.add(
                           _buildChatMessage(
                             isUserMessage: false,
                             message: value['content'],
-                            profileImage: 'assets/images/profile.png',
+                            profileImage: 'assets/images/chatbot.png',
                           ),
                         );
                         setState(() {
                           myController.clear();
                         });
-                        if (value['graph-needed']) {
-                          ApiService.getGraphData(user_id); // Get graph data from API
+                        if (value['graph-needed']==1) {
+                          var graph = ApiService.getGraphData(user_id); // Get graph data from API
+                          if (graph != null) {
+                            // Display graph
+                            chatMessages.add(
+                              Image.memory(
+                                Uint8List.fromList(graph as List<int>),
+                                width: 300,
+                                height: 300,
+                              ),
+                            );
+                          }
                         }
                       });
                     },

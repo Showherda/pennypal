@@ -57,6 +57,9 @@ class IncomingMessage(BaseModel):
 def check_time(message: IncomingMessage):
     global openai
     # determine whether the question is about the past or the future with OpenAI
+    print("inside check_time")
+    print(message)
+    print()
     prompt = [{"role": "user", "content": "determine whether the question is about the past or the future "+message.content+" reply only 0 for past and only 1 for future"}]
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -67,6 +70,9 @@ def check_time(message: IncomingMessage):
 
 def check_query_needed(message: IncomingMessage):
     global openai
+    print("inside check_query_needed")
+    print(message)
+    print()
     # check if the message requires queries
     prompt = [{"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. check if an SQL query is necessary to respond to the following: "+message.content+" reply only 0 for no and only 1 for yes"}]
     response = openai.chat.completions.create(
@@ -78,12 +84,15 @@ def check_query_needed(message: IncomingMessage):
 
 def generate_query_past(message: IncomingMessage, graph_needed: int):
     global openai
+    print("inside generate_query_past")
+    print(message)
+    print()
     # generate the query
     prompt = [
         {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. generate only a PostgreSQL query string to respond to the following: "+message.content},
         {"role": "user", "content": "if the question asks about a specific product, you must check if the product exists in any of the columns: 'transaction_detail', 'description', 'transaction_category'. dont use equality. you must check if the term exists in any of these columns"},
         {"role": "user", "content": "the query must be generated for user_id="+str(message.user_id)},
-        {"role": "user", "content": "dont include any imports. dont include any comments, suggestions, or explanations. dont include any formatting symbols"},
+        {"role": "user", "content": "dont include any imports. dont include any comments, suggestions, or explanations. dont include any formatting symbols."},
         {"role": "user", "content": "generate only code and nothing else."}
     ]
     if graph_needed == 1:
@@ -93,10 +102,13 @@ def generate_query_past(message: IncomingMessage, graph_needed: int):
         messages=prompt,
         max_tokens=300
     )
-    return response.choices[0].message.content
+    return str(response.choices[0].message.content).strip('"')
 
 def generate_query_future(message: IncomingMessage, graph_needed = 1):
     global openai
+    print("inside generate_query_future")
+    print(message)
+    print()
     # generate the query
     prompt = [
         {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. generate only a PostgreSQL query string to respond to the following: "+message.content},
@@ -113,10 +125,13 @@ def generate_query_future(message: IncomingMessage, graph_needed = 1):
         messages=prompt,
         max_tokens=300
     )
-    return response.choices[0].message.content
+    return str(response.choices[0].message.content).strip('"')
 
 def check_graph_needed(message: IncomingMessage):
     global openai
+    print("inside check_graph_needed")
+    print(message)
+    print()
     # determine if a graph is needed to answer the question
     prompt = [{"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. determine if a graph is needed to answer the following: "+message.content+" reply only 0 for no and only 1 for yes"}]
     response = openai.chat.completions.create(
@@ -128,6 +143,9 @@ def check_graph_needed(message: IncomingMessage):
 
 def generate_response_from_query(message: IncomingMessage, result: list):
     global openai
+    print("inside generate_response_from_query")
+    print(message)
+    print()
     # create a response
     prompt = [{"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. The following question was asked: "+message.content+" the following output was generated by database query: "+str(result)+". provide a response to the user.make it brief."}]
     try:
@@ -142,6 +160,9 @@ def generate_response_from_query(message: IncomingMessage, result: list):
 
 def generate_response_no_query(message: IncomingMessage):
     global openai
+    print("inside generate_response_no_query")
+    print(message)
+    print()
     # query isnt needed
     prompt = [{"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. The following question was asked: "+message.content+" no database query is necessary. provide a response to the user. make it brief."}]
     response = openai.chat.completions.create(
@@ -153,6 +174,9 @@ def generate_response_no_query(message: IncomingMessage):
 
 def check_graph_needed(message: IncomingMessage):
     global openai
+    print("inside check_graph_needed")
+    print(message)
+    print()
     # determine if a graph is needed to answer the question
     prompt = [{"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'. determine if a graph is needed to answer the following: "+message.content+" reply only 0 for no and only 1 for yes"}]
     response = openai.chat.completions.create(
@@ -164,6 +188,9 @@ def check_graph_needed(message: IncomingMessage):
 
 def generate_graph_code_past(query: str, message: IncomingMessage):
     global openai
+    print("inside generate_graph_code_past")
+    print(message)
+    print()
     # generate the graph generation code
     prompt = [
         {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'."},
@@ -173,7 +200,7 @@ def generate_graph_code_past(query: str, message: IncomingMessage):
         {"role": "user", "content": "the code must store the graph at data/"+str(message.user_id)+".png"},
         {"role": "user", "content": "these are the imports already specified in the code: import pandas as pd; import numpy as np; import matplotlib.pyplot as plt"},
         {"role": "user", "content": "the data is stored as a python list of tuples called result"},
-        {"role": "user", "content": "dont include any imports that are already defined, dont include any comments, suggestions, or explanations. dont include any formatting symbols"},
+        {"role": "user", "content": "dont include any imports that are already defined, dont include any comments, suggestions, or explanations. dont include any formatting symbols."},
         {"role": "user", "content": "generate only code and nothing else."}
     ]
     response = openai.chat.completions.create(
@@ -185,6 +212,9 @@ def generate_graph_code_past(query: str, message: IncomingMessage):
 
 def generate_graph_code_future(query: str, message: IncomingMessage):
     global openai
+    print("inside generate_graph_code_future")
+    print(message)
+    print()
     # generate the graph generation code
     prompt = [
         {"role": "user", "content": "the messages are for a finance chatbot connected to a database. the database has a 'transactions' table with the columns: 'transaction_id', 'user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt'."},
