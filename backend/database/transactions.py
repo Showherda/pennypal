@@ -7,8 +7,8 @@ def insert_transaction(conn, transaction):
         query =(
              PostgreSQLQuery
             .into(transactions)
-            .columns('user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'amount')
-            .insert(transaction['user_id'], transaction['date'], transaction['transaction_detail'], transaction['description'], transaction['transaction_category'], transaction['payment_method'], transaction['amount'])
+            .columns('user_id', 'date', 'transaction_detail', 'description', 'transaction_category', 'payment_method', 'withdrawal_amt', 'deposit_amt')
+            .insert(transaction['user_id'], transaction['date'], transaction['transaction_detail'], transaction['description'], transaction['transaction_category'], transaction['payment_method'], transaction['withdrawal_amt'], transaction['deposit_amt'])
         )
         query = query.get_sql()
         print(query)

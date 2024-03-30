@@ -1,6 +1,6 @@
 [
     {"role": "system", "content": "Database schema:"},
-    {"role": "system", "content": "transaction table: CREATE TABLE \"transactions\" (\"transaction_id\" serial,\"user_id\" int not null,\"date\" date not null default current_date,\"transaction_detail\" varchar not null,\"description\" varchar,\"transaction_category\" varchar not null,\"payment_method\" varchar,\"amount\" decimal not null,PRIMARY KEY (\"transaction_id\"));"},
+    {"role": "system", "content": "transaction table: CREATE TABLE \"transactions\" (\"transaction_id\" serial,\"user_id\" int not null,\"date\" date not null default current_date,\"transaction_detail\" varchar not null,\"description\" varchar,\"transaction_category\" varchar not null,\"payment_method\" varchar,\"withdrawal_amt\" decimal not null,\"deposit_amt\" decimal not null,PRIMARY KEY (\"transaction_id\"));"},
     {"role": "system", "content": "users table: CREATE TABLE \"users\" (\"user_id\" serial,\"first_name\" varchar not null,\"last_name\" varchar,\"password\" varchar not null,\"email\" varchar unique,PRIMARY KEY (\"user_id\"));"},
     {"role": "system", "content": "conversations table: CREATE TABLE \"conversations\" (\"conversation_id\" serial,\"user_id\" int not null,\"role\" varchar not null,\"content\" varchar not null,PRIMARY KEY (\"conversation_id\"));"},
     {"role": "system", "content": "transaction_categories table: CREATE TABLE \"transaction_categories\" (\"transaction_category_id\" serial,\"transaction_category\" varchar not null unique,PRIMARY KEY (\"transaction_category_id\"));"},

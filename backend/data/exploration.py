@@ -36,6 +36,7 @@ danish['date'] = danish['date'].map(lambda x:fix_data(x))
 emily['date'] = emily['date'].map(lambda x:fix_data(x))
 
 # add amount column
+# amount column cancelled
 ahmad['withdrawal_amt'] = ahmad['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
 ahmad['deposit_amt'] = ahmad['deposit_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
 bryan['withdrawal_amt'] = bryan['withdrawal_amt'].astype(str).map(lambda x: x.replace(' ','').replace('.','').replace(',', '.'))
@@ -69,17 +70,17 @@ danish['deposit_amt'] = danish['deposit_amt'].fillna(0)
 emily['withdrawal_amt'] = emily['withdrawal_amt'].fillna(0)
 emily['deposit_amt'] = emily['deposit_amt'].fillna(0)
 
-ahmad['amount'] = ahmad['deposit_amt']-ahmad['withdrawal_amt']
-bryan['amount'] = bryan['deposit_amt']-bryan['withdrawal_amt']
-charles['amount'] = charles['deposit_amt']-charles['withdrawal_amt']
-danish['amount'] = danish['deposit_amt']-danish['withdrawal_amt']
-emily['amount'] = emily['deposit_amt']-emily['withdrawal_amt']
+# ahmad['amount'] = ahmad['deposit_amt']-ahmad['withdrawal_amt']
+# bryan['amount'] = bryan['deposit_amt']-bryan['withdrawal_amt']
+# charles['amount'] = charles['deposit_amt']-charles['withdrawal_amt']
+# danish['amount'] = danish['deposit_amt']-danish['withdrawal_amt']
+# emily['amount'] = emily['deposit_amt']-emily['withdrawal_amt']
 
-ahmad.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
-bryan.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
-charles.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
-danish.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
-emily.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
+# ahmad.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
+# bryan.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
+# charles.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
+# danish.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
+# emily.drop(columns=['deposit_amt', 'withdrawal_amt'], inplace=True)
 
 # fill missing values
 ahmad['description'] = ahmad['description'].fillna('')
