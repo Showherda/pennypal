@@ -77,7 +77,7 @@ class SignInPage extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFFF3469), // Change button color to pink
+                      backgroundColor: Color(0xFFFF3469), // Change button color to pink
                     ),
                     child: Text(
                       'Sign In',

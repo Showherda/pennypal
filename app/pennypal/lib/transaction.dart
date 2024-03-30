@@ -94,7 +94,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   borderRadius: BorderRadius.circular(20.0),
                   side: BorderSide(color: Color(0xFF34DDFC), width: 1.5),
                 ),
-                primary: Color(0xFFFF3469),
+                backgroundColor: Color(0xFFFF3469),
               ),
               child: Text(
                 'Save',

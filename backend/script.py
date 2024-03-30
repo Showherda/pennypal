@@ -303,6 +303,6 @@ async def incoming_message(message: IncomingMessage):
     conversations.insert_conversation(conn, answer.model_dump())
     connection_pool.putconn(conn)
 
-# if __name__ == '__main__':
-#     uvicorn.run("main:app")
-#     # test()
+if __name__ == '__main__':
+    uvicorn.run("script:app", host="0.0.0.0", port=8000)
+    # test()

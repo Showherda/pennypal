@@ -110,7 +110,7 @@ class WelcomePage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(30.0),
                                 side: BorderSide(color: Color(0xFF34DDFC), width: 1.5),
                               ),
-                              primary: Colors.transparent, // Change button color as needed
+                              backgroundColor: Colors.transparent, // Change button color as needed
                             ),
                             child: Text(
                               'Get Started',

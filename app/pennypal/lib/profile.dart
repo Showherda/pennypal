@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   borderRadius: BorderRadius.circular(20.0),
                   side: BorderSide(color: Color(0xFF34DDFC), width: 1.5),
                 ),
-                primary: Color(0xFFFF3469),
+                backgroundColor: Color(0xFFFF3469),
               ),
               child: Text(
                 'Save',
@@ -118,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: BorderRadius.circular(20.0),
                     side: BorderSide(color: Color(0xFF34DDFC), width: 1.5),
                   ),
-                  primary: Color(0xFFDC143C), // Change button color to pink
+                  backgroundColor: Color(0xFFDC143C), // Change button color to pink
                 ),
                 child: Text(
                   'Logout',
