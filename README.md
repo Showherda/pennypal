@@ -16,3 +16,10 @@ Future updates:
 10. gamification: award users with points if they meet budgets
 11. suggest questions to user
 12. need to update schema
+
+How to run:
+1. start the postgres database
+2. add the code to the server using the combined_data.csv and exploration.py inside data/
+3. python backend\script.py (FastAPI Server)
+4. Start Android Virtual Device (Pixel 5, API 33 used)
+5. Run app\pennypal\lib\main.dart
