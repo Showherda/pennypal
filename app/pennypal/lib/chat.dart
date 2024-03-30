@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:ui';
+import 'package:pennypal/api_service.dart'; // Import ApiService
 
 class ChatPage extends StatefulWidget {
   @override
@@ -10,29 +9,15 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   int _selectedIndex = 2; // Set index for chat page to be highlighted in bottom navigation bar
-  List<dynamic> chatMessages = []; // List to store chat messages
+  final myController = TextEditingController();
+  List<Widget> chatMessages = [];
+  int user_id = 1;
 
   @override
-  void initState() {
-    super.initState();
-    // Fetch chat messages when the page loads
-    fetchChatMessages().then((messages) {
-      setState(() {
-        chatMessages = messages;
-      });
-    });
-  }
-
-  // Method to fetch chat messages from the API
-  Future<List<String>> fetchChatMessages() async {
-    final response = await http.get(Uri.parse('http://192.168.56.1:8000/incoming-message'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((message) => message['content'].toString()).toList();
-    } else {
-      throw Exception('Failed to fetch chat messages');
-    }
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
   }
 
   @override
@@ -69,14 +54,15 @@ class _ChatPageState extends State<ChatPage> {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
-                    // Chatbot messages (left side)
-                    _buildChatMessage(isUserMessage: false, message: 'Hello! How can I assist you?', profileImage: 'assets/images/chatbot_profile.jpg'),
-                    _buildChatMessage(isUserMessage: false, message: 'Is there anything you need help with?', profileImage: 'assets/images/chatbot_profile.jpg'),
-                    // User messages (right side)
-                    _buildChatMessage(isUserMessage: true, message: 'Hi! Can you provide more information about...', profileImage: 'assets/images/profile.png'),
-                    _buildChatMessage(isUserMessage: true, message: 'I need help with...', profileImage: 'assets/images/profile.png'),
-                  ],
+                  children: chatMessages,
+                  // [
+                  //   // Chatbot messages (left side)
+                  //   _buildChatMessage(isUserMessage: false, message: 'Hello! How can I assist you?', profileImage: 'assets/images/profile.png'),
+                  //   _buildChatMessage(isUserMessage: false, message: 'Is there anything you need help with?', profileImage: 'assets/images/profile.png'),
+                  //   // User messages (right side)
+                  //   _buildChatMessage(isUserMessage: true, message: 'Hi! Can you provide more information about...', profileImage: 'assets/images/user_profile.png'),
+                  //   _buildChatMessage(isUserMessage: true, message: 'I need help with...', profileImage: 'assets/images/user_profile.png'),
+                  // ],
                 ),
               ),
             ),
@@ -94,6 +80,7 @@ class _ChatPageState extends State<ChatPage> {
                       filled: true,
                       fillColor: Colors.white,
                     ),
+                    controller: myController,
                   ),
                 ),
                 SizedBox(width: 10.0),
@@ -103,6 +90,34 @@ class _ChatPageState extends State<ChatPage> {
                     icon: Icon(Icons.send, color: Colors.white),
                     onPressed: () {
                       // Send message functionality
+                      // Add user message to chatMessages list
+                      chatMessages.add(
+                        _buildChatMessage(
+                          isUserMessage: true,
+                          message: myController.text,
+                          profileImage: 'assets/images/profile.png',
+                        ),
+                      );
+                      setState(() {
+                        myController.clear();
+                      });
+                      Future<Map<String, dynamic>> response = ApiService.sendMessage(myController.text); // Send message to API
+                      response.then((value) {
+                        // Add chatbot response to chatMessages list
+                        chatMessages.add(
+                          _buildChatMessage(
+                            isUserMessage: false,
+                            message: value['content'],
+                            profileImage: 'assets/images/profile.png',
+                          ),
+                        );
+                        setState(() {
+                          myController.clear();
+                        });
+                        if (value['graph-needed']) {
+                          ApiService.getGraphData(user_id); // Get graph data from API
+                        }
+                      });
                     },
                   ),
                 ),

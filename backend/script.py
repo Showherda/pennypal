@@ -1,7 +1,7 @@
 import psycopg2.pool
 from decouple import config
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse, FileResponse
 from PIL import Image
 import io
 from openai import OpenAI
@@ -251,15 +251,6 @@ async def incoming_message(message: IncomingMessage):
 
                 # execute the graph code
                 exec(graph_code)
-                graph = Image.open("data/"+str(message.user_id)+".png")
-
-                # process the graph
-                img_stream = io.BytesIO()
-                graph.save(img_stream, format="PNG")
-                img_stream.seek(0)
-
-                # delete the graph
-                os.remove("data/"+str(message.user_id)+".png")
 
             # create a response
             answer = generate_response_from_query(message, result)
@@ -301,15 +292,6 @@ async def incoming_message(message: IncomingMessage):
 
                 # execute the graph code
                 exec(graph_code)
-                graph = Image.open("data/"+str(message.user_id)+".png")
-
-                # process the graph
-                img_stream = io.BytesIO()
-                graph.save(img_stream, format="PNG")
-                img_stream.seek(0)
-
-                # delete the graph
-                os.remove("data/"+str(message.user_id)+".png")
 
             # create a response
             answer = generate_response_from_query(message, result)
@@ -322,7 +304,11 @@ async def incoming_message(message: IncomingMessage):
     conversations.insert_conversation(conn, MessageResponse(user_id=message.user_id, content=answer).model_dump())
     connection_pool.putconn(conn)
 
-    return JSONResponse(content={"content": answer})#, Response(img_stream, media_type="image/png")
+    return JSONResponse(content={"content": answer, "graph-needed": graph_needed, "user_id": message.user_id})
+
+@app.get("/get-graph/{user_id}")
+async def get_graph(user_id: int):
+    return FileResponse("data/"+str(user_id)+".png")
 
 if __name__ == '__main__':
     uvicorn.run("script:app", host="0.0.0.0", port=8000)
