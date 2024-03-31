@@ -1,5 +1,7 @@
 Tech stack:
 1. PostgreSQL
+2. FastAPI
+3. Flutter
 
 ERD: https://lucid.app/lucidchart/4fa64863-e7df-421e-bc1a-3c93f9f5af2b/edit?invitationId=inv_652af2e8-b2e0-4e81-bdfa-ce2137d218ab
 
