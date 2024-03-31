@@ -23,3 +23,5 @@ How to run:
 3. python backend\script.py (FastAPI Server)
 4. Start Android Virtual Device (Pixel 5, API 33 used)
 5. Run app\pennypal\lib\main.dart
+
+Frontend code (app folder) contribute by: Samiha Tasnim Dristy (@samiha26)
